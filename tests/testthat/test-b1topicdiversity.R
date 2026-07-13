@@ -15,7 +15,7 @@ test_that("b1topicdiversity matches a manual calculation", {
 
   nw <- network::network(
     y,
-    matrix.type = "incidence",
+    matrix.type = "bipartite",
     directed = FALSE
   )
 
