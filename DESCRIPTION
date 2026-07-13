@@ -1,0 +1,29 @@
+Package: ergm.topicdiversity
+Type: Package
+Title: Topic-Diversity Terms for Bipartite ERGMs
+Version: 0.1.0
+Authors@R: person(
+    given = "Patrick",
+    family = "Edwards",
+    role = c("aut", "cre"),
+    email = "replace-with-your-email@example.com"
+  )
+Description: Provides a custom binary bipartite ERGM term measuring the
+    Shannon effective number of mode-2 topics represented in each mode-1
+    actor's neighborhood.
+License: GPL-3
+Encoding: UTF-8
+Depends:
+    R (>= 4.1.0),
+    network (>= 1.19),
+    ergm (>= 4.8.0)
+Imports:
+    statnet.common (>= 4.11.0)
+LinkingTo:
+    ergm
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+NeedsCompilation: yes
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
