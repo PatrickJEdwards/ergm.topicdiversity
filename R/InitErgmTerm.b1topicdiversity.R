@@ -13,11 +13,20 @@
 #' across first-mode actors, of the inverse Simpson effective number of topics
 #' represented among the second-mode vertices to which each actor is tied.
 #'
-#' For actor i, let theta[j,k] denote mode-2 vertex j's proportion on topic k.
-#' The actor's accumulated topic mass is s[i,k] = sum_j y[i,j] theta[j,k].
-#' After normalizing by actor degree d[i], its portfolio proportions are
-#' p[i,k] = s[i,k] / d[i]. The inverse Simpson effective number of topics is
-#' 1 / sum_k p[i,k]^2.
+#' For actor \eqn{i}, let \eqn{\theta_{jk}} denote mode-2 vertex
+#' \eqn{j}'s proportion on topic \eqn{k}. The actor's accumulated
+#' topic mass is
+#'
+#' \deqn{s_{ik} = \sum_j y_{ij}\theta_{jk}.}
+#'
+#' After normalizing by actor degree \eqn{d_i}, the portfolio
+#' proportions are
+#'
+#' \deqn{p_{ik} = s_{ik}/d_i.}
+#'
+#' The inverse Simpson effective number of topics is
+#'
+#' \deqn{D_i = \frac{1}{\sum_k p_{ik}^2}.}
 #'
 #' @usage
 #' # binary: b1topicdiversity(topics, subtract.one = FALSE)
