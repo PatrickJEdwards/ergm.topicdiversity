@@ -6,18 +6,18 @@
 
 #' @templateVar name b1topicdiversity
 #'
-#' @title Shannon Effective Topic Diversity of Mode-1 Neighborhoods
+#' @title Inverse Simpson Effective Topic Diversity of Mode-1 Neighborhoods
 #'
 #' @description
 #' This binary bipartite ERGM term adds one statistic equal to the sum,
-#' across first-mode actors, of the Shannon effective number of topics
+#' across first-mode actors, of the inverse Simpson effective number of topics
 #' represented among the second-mode vertices to which each actor is tied.
 #'
 #' For actor i, let theta[j,k] denote mode-2 vertex j's proportion on topic k.
 #' The actor's accumulated topic mass is s[i,k] = sum_j y[i,j] theta[j,k].
 #' After normalizing by actor degree d[i], its portfolio proportions are
-#' p[i,k] = s[i,k] / d[i]. The effective number of topics is
-#' exp(-sum_k p[i,k] log(p[i,k])).
+#' p[i,k] = s[i,k] / d[i]. The inverse Simpson effective number of topics is
+#' 1 / sum_k p[i,k]^2.
 #'
 #' @usage
 #' # binary: b1topicdiversity(topics, subtract.one = FALSE)
@@ -28,8 +28,8 @@
 #'   of topic-proportion vertex attributes or a formula such as
 #'   `~ cbind(topic_1, topic_2, topic_3)`.
 #' @param subtract.one Logical. If `FALSE` (the default), a nonisolated actor
-#'   contributes the ordinary Shannon effective topic count D, while an
-#'   isolate contributes zero. If `TRUE`, a nonisolated actor contributes
+#'   contributes the ordinary inverse Simpson effective topic count D, while
+#'   an isolate contributes zero. If `TRUE`, a nonisolated actor contributes
 #'   D - 1. This centers a perfectly one-topic portfolio at zero and removes
 #'   the unavoidable baseline value of one from every nonisolate. A single
 #'   mixed-topic EDM can still contribute more than zero under this shifted
@@ -42,6 +42,10 @@
 #'
 #' The term is dyad-dependent because the change associated with an MP-EDM tie
 #' depends on the MP's existing topic portfolio.
+#'
+#' The inverse Simpson effective number is mathematically identical to the
+#' Laakso-Taagepera effective-number formula commonly used for political
+#' parties, with topic proportions replacing party vote or seat shares.
 #'
 #' @name b1topicdiversity-ergmTerm
 #' @aliases b1topicdiversity
@@ -110,9 +114,9 @@ InitErgmTerm.b1topicdiversity <- function(nw, arglist, ...) {
   theta <- theta / row_mass
 
   statistic_name <- if (isTRUE(a$subtract.one)) {
-    "b1topicdiversity.effective_minus_1"
+    "b1topicdiversity.inverse_simpson_minus_1"
   } else {
-    "b1topicdiversity.effective"
+    "b1topicdiversity.inverse_simpson"
   }
 
   list(

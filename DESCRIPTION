@@ -1,7 +1,7 @@
 Package: ergm.topicdiversity
 Type: Package
 Title: Topic-Diversity Terms for Bipartite ERGMs
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person(
     given = "Patrick",
     family = "Edwards",
@@ -9,7 +9,7 @@ Authors@R: person(
     email = "replace-with-your-email@example.com"
   )
 Description: Provides a custom binary bipartite ERGM term measuring the
-    Shannon effective number of mode-2 topics represented in each mode-1
+    inverse Simpson effective number of mode-2 topics represented in each mode-1
     actor's neighborhood.
 License: GPL-3
 Encoding: UTF-8
@@ -26,4 +26,4 @@ Suggests:
 Config/testthat/edition: 3
 NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+RoxygenNote: 7.3.2

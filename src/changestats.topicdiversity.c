@@ -8,7 +8,6 @@
 #include "ergm_changestat.h"
 #include "ergm_storage.h"
 
-#include <math.h>
 #include <stddef.h>
 
 /*
@@ -22,7 +21,14 @@
  *       actor-major: actor 1 topics 1..K, actor 2 topics 1..K, etc.
  */
 
-static double effective_topic_count(
+/*
+ * Calculate the inverse Simpson effective number of topics:
+ *
+ *   D = 1 / sum_k p_k^2,
+ *
+ * where p_k is the actor's normalized attention to topic k.
+ */
+static double inverse_simpson_topic_count(
   const double *topic_mass,
   double degree,
   int K,
@@ -32,7 +38,7 @@ static double effective_topic_count(
     return 0.0;
   }
 
-  double entropy = 0.0;
+  double sum_squared_proportions = 0.0;
 
   for (int k = 0; k < K; ++k) {
     const double mass = topic_mass[k];
@@ -40,15 +46,20 @@ static double effective_topic_count(
     /* Ignore exact zeros and tiny roundoff artifacts. */
     if (mass > 1e-12) {
       const double p = mass / degree;
-      entropy -= p * log(p);
+      sum_squared_proportions += p * p;
     }
   }
 
-  const double effective = exp(entropy);
+  /* A nonisolated actor must have positive total topic mass. */
+  if (sum_squared_proportions <= 0.0) {
+    return 0.0;
+  }
+
+  const double effective = 1.0 / sum_squared_proportions;
   return subtract_one ? effective - 1.0 : effective;
 }
 
-static double effective_topic_count_after_toggle(
+static double inverse_simpson_topic_count_after_toggle(
   const double *topic_mass,
   double degree,
   const double *edm_topics,
@@ -62,7 +73,7 @@ static double effective_topic_count_after_toggle(
     return 0.0;
   }
 
-  double entropy = 0.0;
+  double sum_squared_proportions = 0.0;
 
   for (int k = 0; k < K; ++k) {
     double new_mass = topic_mass[k] + (double) sign * edm_topics[k];
@@ -74,11 +85,15 @@ static double effective_topic_count_after_toggle(
 
     if (new_mass > 1e-12) {
       const double p = new_mass / new_degree;
-      entropy -= p * log(p);
+      sum_squared_proportions += p * p;
     }
   }
 
-  const double effective = exp(entropy);
+  if (sum_squared_proportions <= 0.0) {
+    return 0.0;
+  }
+
+  const double effective = 1.0 / sum_squared_proportions;
   return subtract_one ? effective - 1.0 : effective;
 }
 
@@ -134,7 +149,7 @@ U_CHANGESTAT_FN(u_b1topicdiversity) {
   }
 }
 
-/* Return the change in the sum of mode-1 effective topic counts. */
+/* Return the change in the sum of mode-1 inverse Simpson topic counts. */
 C_CHANGESTAT_FN(c_b1topicdiversity) {
   const int K = IINPUT_PARAM[0];
   const int subtract_one = IINPUT_PARAM[1];
@@ -152,14 +167,14 @@ C_CHANGESTAT_FN(c_b1topicdiversity) {
   const double *edm_topics =
     INPUT_PARAM + (size_t) edm_index * (size_t) K;
 
-  const double old_value = effective_topic_count(
+  const double old_value = inverse_simpson_topic_count(
     mp_topic_mass,
     degrees[mp_index],
     K,
     subtract_one
   );
 
-  const double new_value = effective_topic_count_after_toggle(
+  const double new_value = inverse_simpson_topic_count_after_toggle(
     mp_topic_mass,
     degrees[mp_index],
     edm_topics,
