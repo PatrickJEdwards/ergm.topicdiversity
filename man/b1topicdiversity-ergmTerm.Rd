@@ -27,11 +27,20 @@ This binary bipartite ERGM term adds one statistic equal to the sum,
 across first-mode actors, of the inverse Simpson effective number of topics
 represented among the second-mode vertices to which each actor is tied.
 
-For actor i, let theta\link{j,k} denote mode-2 vertex j's proportion on topic k.
-The actor's accumulated topic mass is s\link{i,k} = sum_j y\link{i,j} theta\link{j,k}.
-After normalizing by actor degree d\link{i}, its portfolio proportions are
-p\link{i,k} = s\link{i,k} / d\link{i}. The inverse Simpson effective number of topics is
-1 / sum_k p\link{i,k}^2.
+For actor \eqn{i}, let \eqn{\theta_{jk}} denote mode-2 vertex
+\eqn{j}'s proportion on topic \eqn{k}. The actor's accumulated
+topic mass is
+
+\deqn{s_{ik} = \sum_j y_{ij}\theta_{jk}.}
+
+After normalizing by actor degree \eqn{d_i}, the portfolio
+proportions are
+
+\deqn{p_{ik} = s_{ik}/d_i.}
+
+The inverse Simpson effective number of topics is
+
+\deqn{D_i = \frac{1}{\sum_k p_{ik}^2}.}
 }
 \details{
 Topic rows are normalized internally to sum to one. Therefore, all supplied
